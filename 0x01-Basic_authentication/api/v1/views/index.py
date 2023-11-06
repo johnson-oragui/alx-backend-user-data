@@ -42,4 +42,3 @@ def forbidden() -> str:
         error oage 403
     """
     abort(403)
-
