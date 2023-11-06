@@ -15,7 +15,14 @@ class Auth():
         """
         Only Returns False
         """
-        return False
+        if not excluded_paths or excluded_paths == [] or not path:
+            return True
+        # excluded_paths always ends with '/'
+        path = path if path.endswith('/') else path + '/'
+        for excluded_path in excluded_paths:
+            if path.startswith(excluded_path.strip('*')):
+                return False
+        return True
 
     def authorization_header(self, request=None) -> str:
         """
@@ -33,6 +40,11 @@ class Auth():
 if __name__ == "__main__":
     a = Auth()
 
+    print(a.require_auth(None, None))
+    print(a.require_auth(None, []))
+    print(a.require_auth("/api/v1/status/", []))
     print(a.require_auth("/api/v1/status/", ["/api/v1/status/"]))
-    print(a.authorization_header())
-    print(a.current_user())
+    print(a.require_auth("/api/v1/status", ["/api/v1/status/"]))
+    print(a.require_auth("/api/v1/users", ["/api/v1/status/"]))
+    print(a.require_auth("/api/v1/users", ["/api/v1/status/",
+                         "/api/v1/stats"]))
