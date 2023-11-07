@@ -3,7 +3,7 @@
 Module to manage the API authentication.
 """
 from flask import request
-from typing import List, TypeVar
+from typing import List, TypeVar, Optional
 
 
 class Auth():
@@ -24,7 +24,7 @@ class Auth():
                 return False
         return True
 
-    def authorization_header(self, request=None) -> str:
+    def authorization_header(self, request=None) -> Optional[str]:
         """
         Checks for authorization header in request
         """
