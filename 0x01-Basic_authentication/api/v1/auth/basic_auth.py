@@ -84,12 +84,13 @@ class BasicAuth(Auth):
                 - User object associated with valid credentials
         """
         auth_header = self.authorization_header(request)
+
         b64_str = self.extract_base64_authorization_header(auth_header)
+
         decode_b64_str = self.decode_base64_authorization_header(b64_str)
+
         email, pwd = self.extract_user_credentials(decode_b64_str)
+
         user = self.user_object_from_credentials(email, pwd)
+
         return user
-
-
-if __name__ == "__main__":
-    pass
