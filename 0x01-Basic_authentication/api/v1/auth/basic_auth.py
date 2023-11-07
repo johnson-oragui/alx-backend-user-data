@@ -44,13 +44,25 @@ class BasicAuth(Auth):
         else:
             return decoded_str
 
+    def extract_user_credentials(self, decoded_base64_authorization_header: str) -> (str, str):  # noqa
+        """
+        Returns the user email and password from the Base64 decoded value.
+        """
+        if decoded_base64_authorization_header is None:
+            return None, None
+        if not isinstance(decoded_base64_authorization_header, str):
+            return None, None
+        if ":" not in decoded_base64_authorization_header:
+            return None, None
+        user, pwd = decoded_base64_authorization_header.split(':')
+        return user, pwd
+
 
 if __name__ == "__main__":
     a = BasicAuth()
 
-    print(a.decode_base64_authorization_header(None))
-    print(a.decode_base64_authorization_header(89))
-    print(a.decode_base64_authorization_header("Holberton School"))
-    print(a.decode_base64_authorization_header("SG9sYmVydG9u"))
-    print(a.decode_base64_authorization_header("SG9sYmVydG9uIFNjaG9vbA=="))
-    print(a.decode_base64_authorization_header(a.extract_base64_authorization_header("Basic SG9sYmVydG9uIFNjaG9vbA==")))  # noqa
+    print(a.extract_user_credentials(None))
+    print(a.extract_user_credentials(89))
+    print(a.extract_user_credentials("Holberton School"))
+    print(a.extract_user_credentials("Holberton:School"))
+    print(a.extract_user_credentials("bob@gmail.com:toto1234"))
