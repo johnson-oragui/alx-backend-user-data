@@ -7,11 +7,7 @@ from os import getenv
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-# import Auth for assigning of right instance
-from api.v1.auth.auth import Auth
-# import BasicAuth for assigning of right instance
-from api.v1.auth.basic_auth import BasicAuth
-
+from typing import Optional
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -22,8 +18,12 @@ auth = None
 auth_type = getenv("AUTH_TYPE")
 # checks to assign the right instance to auth
 if auth_type == "auth":
+    # import Auth for assigning of right instance
+    from api.v1.auth.auth import Auth
     auth = Auth()
 if auth_type == "basic_auth":
+    # import BasicAuth for assigning of right instance
+    from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth
 
 
@@ -35,7 +35,7 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(401)
-def unauthorized(error):
+def unauthorized(error) -> str:
     """
     Handles unauthorised error
     """
@@ -45,7 +45,7 @@ def unauthorized(error):
 
 
 @app.errorhandler(403)
-def forbidden(error):
+def forbidden(error) -> str:
     """
     Handles forbidden error
     """
@@ -56,7 +56,7 @@ def forbidden(error):
 
 # handles request filtering
 @app.before_request
-def before_request():
+def before_request() -> Optional[str]:
     """
     Filtering of each request before action
     The @app.before_request decorator registers this function to be executed
