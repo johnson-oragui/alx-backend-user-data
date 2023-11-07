@@ -13,7 +13,7 @@ class Auth():
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
-        Only Returns False
+        Checks if authentication is required to access path.
         """
         if not excluded_paths or excluded_paths == [] or not path:
             return True
@@ -26,9 +26,16 @@ class Auth():
 
     def authorization_header(self, request=None) -> str:
         """
-        Just Returns None
+        Checks for authorization header in request
         """
-        return
+        # create a variable key and assign authorization
+        key = "Authorization"
+        # check for request been none and key absent in request header
+        if request is None or key not in request.headers:
+            # return none in regards to the check
+            return None
+        # return authorization as a single header in the response obj
+        return request.headers.get(key)
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
