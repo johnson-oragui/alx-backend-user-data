@@ -77,7 +77,6 @@ class BasicAuth(Auth):
                 return user
 
 
-
 if __name__ == "__main__":
     """ Create a user test """
     user_email = str(uuid.uuid4())
