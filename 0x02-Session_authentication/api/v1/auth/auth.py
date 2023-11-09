@@ -54,7 +54,7 @@ class Auth():
         # retrieve the session_name from the env variable
         session_name = getenv("SESSION_NAME", "_my_session_id")
         # return the value of cokkie
-        return request.cookies.get(session_name)
+        return request.cookie.get(session_name)
 
 
 if __name__ == "__main__":
