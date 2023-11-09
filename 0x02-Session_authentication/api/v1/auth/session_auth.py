@@ -31,7 +31,7 @@ class SessionAuth(Auth):
         """
         Returns a user_id based on the session_id
         """
-        if session_id id None or not isinstance(user_id, str):
+        if session_id is None or not isinstance(session_id, str):
             return
         # Use .get() to access the User ID based on the Session ID
         return SessionAuth.user_id_by_session_id.get(session_id)
