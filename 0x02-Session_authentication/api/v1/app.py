@@ -4,10 +4,10 @@ Route module for the API
 """
 import os
 from os import getenv
-from api.v1.views import app_views
+from typing import Optional
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
-from typing import Optional
+from api.v1.views import app_views
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -77,10 +77,12 @@ def before_request() -> Optional[str]:
     if auth.authorization_header(request) is None:
         # if it does, raise error with status code 401
         abort(401)  # unauthorized access.
+        current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
-    if auth.current_user(request) is None:
+    if current_user is None:
         # if it does, raise error with status code 403
         raise abort(403)  # forbidden access.
+    request.current_user = current_user
 
 
 if __name__ == "__main__":
