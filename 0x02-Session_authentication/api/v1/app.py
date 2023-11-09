@@ -82,7 +82,7 @@ def before_request() -> Optional[str]:
     if current_user is None:
         # if it does, raise error with status code 403
         raise abort(403)  # forbidden access
-    request.current_user = current_user
+    setattr(request, "current_user", current_user)
 
 
 if __name__ == "__main__":
