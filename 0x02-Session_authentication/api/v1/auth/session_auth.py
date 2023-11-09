@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module for SessionAuth
+Module for SessionAuth Class
 """
 import uuid
 from typing import Optional
@@ -10,7 +10,7 @@ from models.user import User
 
 class SessionAuth(Auth):
     """
-    SessionAuth authentication
+    SessionAuth authentication Class
     """
     # attr to store user_id as session using uuid as key
     user_id_by_session_id = {}
@@ -24,5 +24,5 @@ class SessionAuth(Auth):
         # generate uuid for the session key
         session_id = str(uuid.uuid4())
         # set the user_id as value to session key
-        SessionAuth.user_id_by_session_id.get(session_id) = user_id
+        self.user_id_by_session_id[session_id] = user_id
         return session_id
