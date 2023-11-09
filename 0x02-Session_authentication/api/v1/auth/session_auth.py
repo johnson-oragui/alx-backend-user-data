@@ -26,3 +26,12 @@ class SessionAuth(Auth):
         # set the user_id as value to session key
         self.user_id_by_session_id[session_id] = user_id
         return session_id
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """
+        Returns a user_id based on the session_id
+        """
+        if session_id id None or not isinstance(user_id, str):
+            return
+        # Use .get() to access the User ID based on the Session ID
+        return SessionAuth.user_id_by_session_id.get(session_id)
