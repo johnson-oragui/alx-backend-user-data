@@ -82,6 +82,9 @@ def before_request() -> Optional[str]:
         # if it does, raise error with status code 403
         raise abort(403)  # forbidden access.
 
+    current_user = auth.current_user(request)
+    request.current_user(current_user)
+
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
