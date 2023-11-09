@@ -24,7 +24,10 @@ if auth_type == "auth":
 if auth_type == "basic_auth":
     # import BasicAuth for assigning of right instance
     from api.v1.auth.basic_auth import BasicAuth
-    auth = BasicAuth
+    auth = BasicAuth()
+if auth_type == "ssession_auth":
+    from api.v1.auth.session_auth import SessionAuth
+    auth = SessionAuth()
 
 
 @app.errorhandler(404)
