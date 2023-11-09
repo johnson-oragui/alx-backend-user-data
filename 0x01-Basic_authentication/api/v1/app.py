@@ -23,7 +23,7 @@ if auth_type == "auth":
     auth = Auth()
 if auth_type == "basic_auth":
     # import BasicAuth for assigning of right instance
-    from api.v1.auth.basic_auth impiort BasicAuth
+    from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
 
 
