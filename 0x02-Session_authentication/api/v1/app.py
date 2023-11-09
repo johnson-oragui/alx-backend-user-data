@@ -67,7 +67,7 @@ def before_request() -> Optional[str]:
     """
     # create a list of allowed paths
     allowed_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
-                     '/api/v1/forbidden/']
+                     '/api/v1/forbidden/', '/api/v1/auth_session/login/']
     # check for if auth is None,i.e no instance is assigned to auth
     if auth is None:
         # do nothing
@@ -80,6 +80,8 @@ def before_request() -> Optional[str]:
     if auth.authorization_header(request) is None:
         # if it does, raise error with status code 401
         abort(401)  # unauthorized access.
+    if auth.session_cookie(request) is None:
+        abort(401)
     current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
     if current_user is None:
