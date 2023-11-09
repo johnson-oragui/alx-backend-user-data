@@ -77,12 +77,10 @@ def before_request() -> Optional[str]:
     if auth.authorization_header(request) is None:
         # if it does, raise error with status code 401
         abort(401)  # unauthorized access.
-    current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
-    if current_user is None:
+    if auth.current_user(request) is None:
         # if it does, raise error with status code 403
-        raise abort(403)  # forbidden access
-    setattr(request, "current_user", current_user)
+        raise abort(403)  # forbidden access.
 
 
 if __name__ == "__main__":
