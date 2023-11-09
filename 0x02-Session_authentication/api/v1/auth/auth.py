@@ -2,6 +2,8 @@
 """
 Module to manage the API authentication.
 """
+import os
+from os import getenv
 from flask import request
 from typing import List, TypeVar, Optional
 
@@ -42,6 +44,17 @@ class Auth():
         Only Returns None
         """
         return
+
+    def session_cookie(self, request=None) -> Optional[str]:
+        """
+        Return the value of the cookie from request
+        """
+        if request is None:
+            return
+        # retrieve the session_name from the env variable
+        session_name = getenv("SESSION_NAME", "_my_session_id")
+        # return the value of cokkie
+        return request.cookies.get(session_name)
 
 
 if __name__ == "__main__":
