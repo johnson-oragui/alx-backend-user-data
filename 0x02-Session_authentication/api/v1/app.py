@@ -14,8 +14,10 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 # create auth to store authentication instance, starting it with None
 auth = None
+
 # assign the right instance of authentication to auth
 auth_type = getenv("AUTH_TYPE")
+
 # checks to assign the right instance to auth
 if auth_type == "auth":
     # import Auth for assigning of right instance
@@ -28,10 +30,10 @@ if auth_type == "basic_auth":
 if auth_type == "ssession_auth":
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
-elif AUTH_TYPE == "session_exp_auth":
+elif auth_type == "session_exp_auth":
     from api.v1.auth.session_exp_auth import SessionExpAuth
     auth = SessionExpAuth()
-elif AUTH_TYPE == "session_db_auth":
+elif auth_type == "session_db_auth":
     from api.v1.auth.session_db_auth import SessionDBAuth
     auth = SessionDBAuth()
 
