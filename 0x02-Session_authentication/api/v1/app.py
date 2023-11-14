@@ -90,7 +90,7 @@ def before_request() -> Optional[str]:
     if auth.authorization_header(request) is None:
         print("Authorization header missing")
         # if it does, raise error with status code 401
-        abort(401)  # unauthorized access.
+        abort(403)  # unauthorized access.
     if auth.session_cookie(request) is None:
         print("Session cookie missing")
         abort(401)
