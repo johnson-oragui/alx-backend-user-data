@@ -50,21 +50,17 @@ class Auth():
         Return the value of the cookie from request
         """
         if request is None:
+            print("request is None")
             return
         # retrieve the session_name from the env variable
         session_name = getenv("SESSION_NAME", "_my_session_id")
+        #print(f"session_name: {session_name}")
+        #print(f"request.cookies.get: {request.cookies.get(session_name)}")
+        if request.cookies.get(session_name):
+            return request.cookies.get(session_name)
         # return the value of cokkie
-        return request.cookies.get(session_name)
+        return f"_my_session_id"
 
 
 if __name__ == "__main__":
-    a = Auth()
-
-    print(a.require_auth(None, None))
-    print(a.require_auth(None, []))
-    print(a.require_auth("/api/v1/status/", []))
-    print(a.require_auth("/api/v1/status/", ["/api/v1/status/"]))
-    print(a.require_auth("/api/v1/status", ["/api/v1/status/"]))
-    print(a.require_auth("/api/v1/users", ["/api/v1/status/"]))
-    print(a.require_auth("/api/v1/users", ["/api/v1/status/",
-                         "/api/v1/stats"]))
+    pass

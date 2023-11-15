@@ -27,7 +27,7 @@ if auth_type == "basic_auth":
     # import BasicAuth for assigning of right instance
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
-if auth_type == "ssession_auth":
+if auth_type == "session_auth":
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
 elif auth_type == "session_exp_auth":
@@ -39,14 +39,14 @@ elif auth_type == "session_db_auth":
 
 
 @app.errorhandler(404)
-def not_found(error) -> str:
+def not_found(_) -> str:
     """ Not found handler
     """
     return jsonify({"error": "Not found"}), 404
 
 
 @app.errorhandler(401)
-def unauthorized(error) -> str:
+def unauthorized(_) -> str:
     """
     Handles unauthorised error
     """
@@ -56,7 +56,7 @@ def unauthorized(error) -> str:
 
 
 @app.errorhandler(403)
-def forbidden(error) -> str:
+def forbidden(_) -> str:
     """
     Handles forbidden error
     """
@@ -74,25 +74,27 @@ def before_request() -> Optional[str]:
     before each request.
     """
     # create a list of allowed paths
-    allowed_paths = ['/api/v1/status/', '/api/v1/unauthorized/',
-                     '/api/v1/forbidden/', '/api/v1/auth_session/login/']
+    excluded_paths = ['/api/v1/status/',
+                      '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/',
+                      '/api/v1/auth_session/login/']
     # check for if auth is None,i.e no instance is assigned to auth
     if auth is None:
         # do nothing
         return
     # checks if request.path is not part of allowed_paths
-    if not auth.require_auth(request.path, allowed_paths):
+    if not auth.require_auth(request.path, excluded_paths):
         # do nothing if it is not part of the list
         return
     # checks if the auth method 'authorization_header' returned None
-    if auth.authorization_header(request) is None:
-        # if it does, raise error with status code 401
-        abort(401)  # unauthorized access.
-    if auth.session_cookie(request) is None:
+    if (auth.authorization_header(request) is None or
+            auth.session_cookie(request) is None):
+        print("Session cookie missing")
         abort(401)
     current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
     if current_user is None:
+        print("User not authenticated")
         # if it does, raise error with status code 403
         abort(403)  # forbidden access.
     request.current_user = current_user
