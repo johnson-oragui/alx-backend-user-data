@@ -47,7 +47,7 @@ class DB:
             self.__session = DBSession()
             # Returns the current value of __session.
         return self.__session
-    
+
     def add_user(self, email: str, hashed_password: str) -> User:
         """
         Saves the user to the database
@@ -60,7 +60,7 @@ class DB:
         self._session.commit()
         return usr
 
-        
+
 if __name__ == "__main__":
     my_db = DB()
 
