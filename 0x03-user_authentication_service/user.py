@@ -2,21 +2,23 @@
 """
 Module for creating user database
 """
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
-db = SQLAlchemy()
+Base = declarative_base()
 
-class User(db.Model):
+
+class User(Base):
     """
-    Creates database table users
+    Creates/TRepresents table for users
     """
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(255), nullable=False)
-    hashed_password = db.Column(db.String(255), nullable=False)
-    session_id = db.Column(db.String(255))
-    reset_token = db.Column(db.String(255))
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    session_id = Column(String(255))
+    reset_token = Column(String(255))
 
 
 if __name__ == "__main__":
