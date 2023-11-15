@@ -5,10 +5,11 @@ DB module
 # Creates an SQLAlchemy database engine.
 from sqlalchemy import create_engine
 # The declarative base class from which all SQLAlchemy models inherit.
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import InvalidRequestError
 # Session: Represents an active database session in SQLAlchemy.
 # sessionmaker: A factory for creating new SQLAlchemy Session objects.
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm.exc import NoResultFound
 from user import Base, User
 
 
@@ -58,12 +59,36 @@ class DB:
         self._session.commit()
         return usr
 
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Returns the first row found in the users table as filtered
+            by the method’s input arguments.
+        """
+        if not all(hasattr(User, key) for key in kwargs.keys()):
+            raise InvalidRequestError()
+
+        usr = self._session.query(User).filter_by(**kwargs).first()
+        if usr:
+            return usr
+        raise NoResultFound()
+
 
 if __name__ == "__main__":
     my_db = DB()
+    user = my_db.add_user("test@test.com", "PwdHashed")
+    print(user.id)
 
-    user_1 = my_db.add_user("test@test.com", "SuperHashedPwd")
-    print(user_1.id)
+    find_user = my_db.find_user_by(email="test@test.com")
+    print(find_user.id)
 
-    user_2 = my_db.add_user("test1@test.com", "SuperHashedPwd1")
-    print(user_2.id)
+    try:
+        find_user = my_db.find_user_by(email="test2@test.com")
+        print(find_user.id)
+    except NoResultFound:
+        print("Not found")
+
+    try:
+        find_user = my_db.find_user_by(no_email="test@test.com")
+        print(find_user.id)
+    except InvalidRequestError:
+        print("Invalid")
