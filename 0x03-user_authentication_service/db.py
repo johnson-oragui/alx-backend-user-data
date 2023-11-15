@@ -9,9 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # Session: Represents an active database session in SQLAlchemy.
 # sessionmaker: A factory for creating new SQLAlchemy Session objects.
 from sqlalchemy.orm import sessionmaker, Session
-from user import User
-
-from user import Base
+from user import Base, User
 
 
 # DB class encapsulates database-related functionality.
@@ -26,7 +24,7 @@ class DB:
         """
         # Creates an SQLite database engine pointing to "a.db"
         #   with echoing SQL statements
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db")
         # Drops existing tables
         Base.metadata.drop_all(self._engine)
         # creates new ones based on the models defined in user.py.
