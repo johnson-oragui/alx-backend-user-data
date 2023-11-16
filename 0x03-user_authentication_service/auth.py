@@ -178,10 +178,10 @@ class Auth:
             # If a user with the provided email is found
             if existing_user:
                 # Generate a new reset password token using a UUID
-                token = str(uuid.uuid4())
+                token = _generate_uuid()
 
                 # Associate the token with the user in the database
-                existing_user.reset_token = token
+                self._db.update_user(existing_user.id, reset_token=token)
 
                 # Return the generated reset password token
                 return token
