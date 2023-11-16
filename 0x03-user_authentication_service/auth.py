@@ -155,7 +155,7 @@ class Auth:
         except Exception:
             return
 
-    def get_reset_password_token(self, email: str) -> Optional[str]:
+    def get_reset_password_token(self, email: str) -> str:
         """
         Generates and retrieves a reset password token for the user.
 
