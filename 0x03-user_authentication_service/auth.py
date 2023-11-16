@@ -193,6 +193,34 @@ class Auth:
             # Handle unexpected exceptions and raise ValueError
             raise ValueError
 
+    def update_password(self, reset_token: str, password: str) -> None:
+        """
+        Update user password using a reset token.
+
+        Parameters:
+        - reset_token (str): Unique token associated with the password
+                                reset request.
+        - password (str): New password to be set for the user.
+
+        Raises:
+        - ValueError: If the reset token is invalid or not
+                        found in the database.
+        """
+        try:
+            # Find the user with the given reset token
+            existing_user = self._db.find_user_by(reset_token=reset_token)
+        except ValueError:
+            # If the reset token is invalid, raise a ValueError
+            raise ValueError
+
+        # Hash the new password
+        hashed_pwd = _hash_password(password)
+
+        # Update the user's hashed password and reset_token in the database
+        self._db.update_user(existing_user,
+                             hashed_password=hashed_pwd.decode("utf-8"))
+        self._db.update_user(existing_user, reset_token=None)
+
 
 if __name__ == "__main__":
     pass
