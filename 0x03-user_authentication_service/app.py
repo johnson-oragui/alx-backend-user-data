@@ -67,8 +67,8 @@ def users():
         abort(400)
 
 
-@app.route("/profile", methods=["GET"])
-def profile() -> Optional[Tuple]:
+@app.route("/profile")
+def profile() -> str:
     """
     Retrieves user profile information.
 
@@ -101,7 +101,7 @@ def profile() -> Optional[Tuple]:
                 #   with the user's email
                 if existing_user:
                     message = {"email": existing_user.email}
-                    response = jsonify(message), 200
+                    response = jsonify(message)
                     return response
                 else:
                     # If no user is found, abort with 403 Forbidden
