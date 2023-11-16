@@ -119,7 +119,7 @@ class Auth:
         except NoResultFound:
             # If no user is found with the provided email, return None
             return
-        
+
     def get_user_from_session_id(self, session_id) -> Optional[str]:
         """
         Get the user associated with the provided session ID.
