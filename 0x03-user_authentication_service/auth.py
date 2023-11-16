@@ -3,6 +3,7 @@
 Module to hash password and interact with auth DB
 """
 import bcrypt
+import uuid
 from sqlalchemy.orm.exc import NoResultFound
 from db import DB
 from user import User
@@ -23,6 +24,13 @@ def _hash_password(password: str) -> bytes:
 
     # Return the hashed password as bytes
     return hashed_pwd
+
+
+def _generate_uuid() -> str:
+    """
+    Return a string representation of a new UUID.
+    """
+    return str(uuid.uuid4())
 
 
 class Auth:
