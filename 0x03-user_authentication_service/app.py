@@ -124,7 +124,6 @@ def logout():
     - Redirect to the home page ("/") after successful logout.
     - HTTP 403 Forbidden if there's an issue during the logout process.
     """
-
     # Check if the request method is DELETE
     if request.method == "DELETE":
         # Get the user's session ID from the cookies
@@ -132,14 +131,13 @@ def logout():
 
         try:
             # Attempt to get the user associated with the session ID
-            user = AUTH.get_user_from_session_id(session_id)
+            existing_user = AUTH.get_user_from_session_id(session_id)
 
             # If a user is found, destroy the user's session
-            if user:
-                AUTH.destroy_session(user.id)
-
-            # Redirect the user to the home page after successful logout
-            return redirect("/")
+            if existing_user:
+                AUTH.destroy_session(existing_user.id)
+                # Redirect the user to the home page after successful logout
+                return redirect("/")
         except Exception:
             # Handle exceptions and return HTTP 403 Forbidden
             abort(403)
