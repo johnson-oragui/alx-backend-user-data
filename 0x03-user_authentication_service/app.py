@@ -2,7 +2,7 @@
 """
 Module to run flask app
 """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, make_response
 from auth import Auth
 
 
@@ -17,9 +17,57 @@ def home():
     Route to home
     """
     # Create a JSON response message
-    meassage = jsonify({"message": "Bienvenue"})
+    message = {"message": "Bienvenue"}
     # Return a JSON response message
-    return meassage
+    return jsonify(message)
+
+
+@app.route("/sessions", methods=["POST"])
+def login():
+    """
+    Handles user login.
+
+    Validates user credentials, generates a session ID,
+    and sets a session_id cookie upon successful login.
+
+    Returns JSON response with appropriate messages and HTTP status codes.
+
+    HTTP Status Codes:
+    - 200 OK: User successfully logged in.
+    - 401 Unauthorized: Invalid credentials or login failure.
+    - 500 Internal Server Error: Unexpected error during login.
+    """
+    try:
+        # Check if the request method is POST
+        if request.method == "POST":
+            email = request.form.get("email")
+            password = request.form.get("password")
+            try:
+                # Check if the provided credentials are valid
+                if not AUTH.valid_login(email, password):
+                    # If not, abort with 401 Unauthorized
+                    abort(401)
+
+                # Generate a session ID and update the user's session
+                session_id = AUTH.create_session(email)
+
+                # Create a response with the desired message
+                message = {"email": email, "message": "logged in"}
+                response = make_response(jsonify(message), 200)
+
+                # Set the session_id cookie
+                response.set_cookie("session_id", session_id)
+                return response
+            except ValueError:
+                # If an exception occurs, abort with 401 Unauthorized
+                abort(401)
+        else:
+            # If the request method is not POST, abort with 401 Unauthorized
+            abort(401)
+    except Exception:
+        # If an unexpected exception occurs,
+        #   abort with 500 Internal Server Error
+        abort(500)
 
 
 @app.route("/users", methods=["POST"])
