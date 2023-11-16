@@ -167,13 +167,13 @@ def update_password() -> Response:
         try:
             # Attempt to update the user's password
             AUTH.update_password(reset_token, new_password)
-        except Exception:
+        except ValueError:
             # If an exception occurs, abort with a 403 Forbidden status code
             abort(403)
 
         # Create a success message and return it as a JSON response
         message = {"email": email, "message": "Password updated"}
-        return jsonify(message)
+        return jsonify(message), 200
     else:
         # If the request method is not PUT,
         #   abort with a 403 Forbidden status code
