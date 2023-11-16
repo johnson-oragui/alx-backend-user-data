@@ -57,11 +57,11 @@ def users():
         # Catch a ValueError if the email is already registered
         except ValueError:
             # Return a JSON response with a 400 status code
-            return jsonify({"message": "email already registered"}), 400
+            return jsonify({"message": "email already registered"})
         # Catch other exceptions
         except Exception as E:
             # Return a JSON response with a 500 status code
-            return jsonify({"message": f"Error {str(E)} occured"}), 500
+            return jsonify({"message": f"Error {str(E)} occured"})
     else:
         # If the request method is not POST, return a 400 Bad Request
         abort(400)
@@ -116,6 +116,30 @@ def profile() -> str:
             abort(403)
     else:
         # If the request method is not GET, abort with 403 Forbidden
+        abort(403)
+
+
+@app.route("/reset_password", methods=["POST"])
+def get_reset_password_token() -> str:
+    """
+    If the email is not registered, respond with a 403 status code.
+    Otherwise, generate a token and respond with a
+    200 HTTP status and JSON Payload
+    """
+    if request.method == "POST":
+        try:
+            email = request.form.get("email")
+            if email:
+                email.strip()
+            try:
+                reset_token = AUTH.get_reset_password_token(email)
+            except Exception:
+                abort(403)
+            message = {"email": email, "reset_token": reset_token}
+            return jsonify(message)
+        except Exception:
+            abort(403)
+    else:
         abort(403)
 
 
