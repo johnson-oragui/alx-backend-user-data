@@ -119,14 +119,27 @@ class Auth:
         except NoResultFound:
             # If no user is found with the provided email, return None
             return
+        
+    def get_user_from_session_id(self, session_id) -> Optional[str]:
+        """
+        Get the user associated with the provided session ID.
+
+        session_id: Session ID to identify the user.
+        return: User object if found, otherwise None.
+        """
+        try:
+            # Attempt to find the user by the provided session_id
+            existing_user = self._db.find_user_by(session_id=session_id)
+            # If a user with the provided session_id is found
+            if existing_user:
+                # Return the user object
+                return existing_user
+            # If no user is found with the provided session_id, return None
+            return
+        except Exception:
+            # Handle any exceptions that might occur during the process
+            return
 
 
 if __name__ == "__main__":
-    email = 'bob@bob.com'
-    password = 'MyPwdOfBob'
-    auth = Auth()
-
-    auth.register_user(email, password)
-
-    print(auth.create_session(email))
-    print(auth.create_session("unknown@email.com"))
+    pass
