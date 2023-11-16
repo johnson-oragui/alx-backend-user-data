@@ -167,7 +167,7 @@ def update_password() -> Response:
         try:
             # Attempt to update the user's password
             AUTH.update_password(reset_token, new_password)
-        except ValueError:
+        except Exception:
             # If an exception occurs, abort with a 403 Forbidden status code
             abort(403)
 
