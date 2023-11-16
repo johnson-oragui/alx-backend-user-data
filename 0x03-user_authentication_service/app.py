@@ -2,7 +2,10 @@
 """
 Module to run flask app
 """
-from flask import Flask, jsonify, request, abort, make_response, redirect
+from flask import (Flask, jsonify, request,
+                   abort, make_response,
+                   redirect, Response)
+from typing import Optional, Tuple
 from auth import Auth
 
 
@@ -65,7 +68,7 @@ def users():
 
 
 @app.route("/profile", methods=["GET"])
-def profile() -> str:
+def profile() -> Optional[Tuple]:
     """
     Retrieves user profile information.
 
@@ -117,7 +120,7 @@ def profile() -> str:
 
 
 @app.route("/sessions", methods=["POST"])
-def login() -> str:
+def login() -> Optional[Tuple]:
     """
     Handles user login.
 
@@ -168,7 +171,7 @@ def login() -> str:
 
 
 @app.route("/sessions", methods=["DELETE"])
-def logout():
+def logout() -> Response:
     """
     Endpoint for user logout.
 
