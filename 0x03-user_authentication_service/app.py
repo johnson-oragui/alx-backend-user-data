@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def home():
+def home() -> Response:
     """
     Route to home
     """
@@ -26,7 +26,7 @@ def home():
 
 
 @app.route("/users", methods=["POST"])
-def users():
+def users() -> Response:
     """
     Registers Users.
 
@@ -59,16 +59,16 @@ def users():
             # Return a JSON response with a 400 status code
             return jsonify({"message": "email already registered"})
         # Catch other exceptions
-        except Exception as E:
+        except Exception:
             # Return a JSON response with a 500 status code
-            return jsonify({"message": f"Error {str(E)} occured"})
+            return jsonify({"message": "email already registered"})
     else:
         # If the request method is not POST, return a 400 Bad Request
         abort(400)
 
 
 @app.route("/profile")
-def profile() -> str:
+def profile() -> Response:
     """
     Retrieves user profile information.
 
@@ -120,7 +120,7 @@ def profile() -> str:
 
 
 @app.route("/reset_password", methods=["POST"])
-def get_reset_password_token() -> str:
+def get_reset_password_token() -> Response:
     """
     If the email is not registered, respond with a 403 status code.
     Otherwise, generate a token and respond with a
@@ -140,6 +140,43 @@ def get_reset_password_token() -> str:
         except Exception:
             abort(403)
     else:
+        abort(403)
+
+
+@app.route("/reset_password", methods=["PUT"])
+def update_password() -> Response:
+    """
+    Endpoint for updating user password using a reset token.
+
+    Expects a PUT request with the following form data:
+    - email: User's email address.
+    - reset_token: Unique token associated with the password reset request.
+    - new_password: New password to be set for the user.
+
+    Returns a JSON response with a success message if the update is
+    successful, or raises a 403 Forbidden error if there's an issue.
+
+    HTTP Status Codes:
+    - 200 OK: Password successfully updated.
+    - 403 Forbidden: Invalid request or error during the update process.
+    """
+    if request.method == "PUT":
+        email = request.form.get("email")
+        reset_token = request.form.get("reset_token")
+        new_password = request.form.get("new_password")
+        try:
+            # Attempt to update the user's password
+            AUTH.update_password(reset_token, new_password)
+        except Exception:
+            # If an exception occurs, abort with a 403 Forbidden status code
+            abort(403)
+
+        # Create a success message and return it as a JSON response
+        message = {"email": email, "message": "Password updated"}
+        return jsonify(message)
+    else:
+        # If the request method is not PUT,
+        #   abort with a 403 Forbidden status code
         abort(403)
 
 
