@@ -65,9 +65,8 @@ def login():
             # If the request method is not POST, abort with 401 Unauthorized
             abort(401)
     except Exception:
-        # If an unexpected exception occurs,
-        #   abort with 500 Internal Server Error
-        abort(500)
+        # If an unexpected exception occurs, abort with 401
+        abort(401)
 
 
 @app.route("/users", methods=["POST"])
