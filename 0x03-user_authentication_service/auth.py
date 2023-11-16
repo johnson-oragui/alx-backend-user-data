@@ -155,6 +155,44 @@ class Auth:
         except Exception:
             return
 
+    def get_reset_password_token(self, email: str) -> Optional[str]:
+        """
+        Generates and retrieves a reset password token for the user.
+
+        This method generates a unique reset password token, associates it
+        with the user identified by the provided email, and returns the token.
+
+        email (str): Email address of the user for whom the token is generated.
+
+        Returns:
+        - str: The generated reset password token.
+
+        Raises:
+        - ValueError: If the provided email does not correspond to an existing
+                    user or if an unexpected error occurs during the process.
+        """
+        try:
+            # Attempt to find the user by the provided email
+            existing_user = self._db.find_user_by(email=email)
+
+            # If a user with the provided email is found
+            if existing_user:
+                # Generate a new reset password token using a UUID
+                token = str(uuid.uuid4())
+
+                # Associate the token with the user in the database
+                existing_user.reset_token = token
+
+                # Return the generated reset password token
+                return token
+            else:
+                # If no user is found with the provided email, raise ValueError
+                raise ValueError
+
+        except Exception:
+            # Handle unexpected exceptions and raise ValueError
+            raise ValueError
+
 
 if __name__ == "__main__":
     pass

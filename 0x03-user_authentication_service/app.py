@@ -65,7 +65,7 @@ def users():
 
 
 @app.route("/profile", methods=["GET"])
-def profile():
+def profile() -> str:
     """
     Retrieves user profile information.
 
