@@ -128,6 +128,8 @@ def logout():
     if request.method == "DELETE":
         # Get the user's session ID from the cookies
         session_id = request.cookies.get("session_id", None)
+        if session_id is None:
+            abort(403)
 
         try:
             # Attempt to get the user associated with the session ID
