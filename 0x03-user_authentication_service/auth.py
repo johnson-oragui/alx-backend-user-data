@@ -152,6 +152,7 @@ class Auth:
             user = self._db.find_user_by(id=user_id)
             # Set the session ID to None, effectively destroying the session
             user.session_id = None
+            self._db._session.commit()
         except Exception:
             return
 
@@ -217,9 +218,9 @@ class Auth:
         hashed_pwd = _hash_password(password)
 
         # Update the user's hashed password and reset_token in the database
-        self._db.update_user(existing_user,
+        self._db.update_user(existing_user.id,
                              hashed_password=hashed_pwd.decode("utf-8"))
-        self._db.update_user(existing_user, reset_token=None)
+        self._db.update_user(existing_user.id, reset_token=None)
 
 
 if __name__ == "__main__":

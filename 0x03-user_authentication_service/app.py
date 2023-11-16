@@ -206,7 +206,6 @@ def login() -> Optional[Tuple]:
             try:
                 # Check if the provided credentials are valid
                 if not AUTH.valid_login(email, password):
-                    print(f"{AUTH.valid_login(email, password) = }")
                     # If not, abort with 401 Unauthorized
                     abort(401)
 
