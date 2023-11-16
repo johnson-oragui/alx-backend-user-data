@@ -62,21 +62,42 @@ class Auth:
         # Return new user
         return new_usr
 
+    def valid_login(self, email: str, password: str) -> bool:
+        """
+        Validates user login credentials.
+
+        email: Email address of the user.
+        password: Password provided by the user.
+        return: True if login credentials are valid, False otherwise.
+        """
+        try:
+            # Attempt to find the user by the provided email
+            existing_user = self._db.find_user_by(email=email)
+            # If a user with the provided email is found
+            if existing_user:
+                # encode the provided login password
+                encoded_hashed_pwd = password.encode()
+                # retrieve the hashed_password from the database and encode it
+                user_pwd_bytes = existing_user.hashed_password.encode('utf-8')
+                # Compare the encoded login password with
+                #   the stored hashed password
+                return bcrypt.checkpw(encoded_hashed_pwd, user_pwd_bytes)
+            else:
+                return False
+        # Handle the case where no user is found with the provided email
+        except NoResultFound:
+            return False
+
 
 if __name__ == "__main__":
-    email = 'me@me.com'
-    password = 'mySecuredPwd'
-
+    email = 'bob@bob.com'
+    password = 'MyPwdOfBob'
     auth = Auth()
 
-    try:
-        user = auth.register_user(email, password)
-        print("successfully created a new user!")
-    except ValueError as err:
-        print("could not create a new user: {}".format(err))
+    auth.register_user(email, password)
 
-    try:
-        user = auth.register_user(email, password)
-        print("successfully created a new user!")
-    except ValueError as err:
-        print("could not create a new user: {}".format(err))
+    print(auth.valid_login(email, password))
+
+    print(auth.valid_login(email, "WrongPwd"))
+
+    print(auth.valid_login("unknown@email", password))
