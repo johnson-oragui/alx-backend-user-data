@@ -120,7 +120,7 @@ class Auth:
             # If no user is found with the provided email, return None
             return
 
-    def get_user_from_session_id(self, session_id) -> Optional[str]:
+    def get_user_from_session_id(self, session_id: str) -> Optional[str]:
         """
         Get the user associated with the provided session ID.
 
@@ -138,6 +138,21 @@ class Auth:
             return
         except Exception:
             # Handle any exceptions that might occur during the process
+            return
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Destroys the session associated with the given user ID.
+
+        user_id: ID of the user whose session needs to be destroyed.
+        return: None
+        """
+        try:
+            # Attempt to find the user by the provided user ID
+            user = self._db.find_user_by(id=user_id)
+            # Set the session ID to None, effectively destroying the session
+            user.session_id = None
+        except Exception:
             return
 
 
