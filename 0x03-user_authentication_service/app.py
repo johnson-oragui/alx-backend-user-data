@@ -64,8 +64,60 @@ def users():
         abort(400)
 
 
+@app.route("/profile", methods=["GET"])
+def profile():
+    """
+    Retrieves user profile information.
+
+    Handles the retrieval of user profile information via a GET request.
+    Expects a valid session ID in the request cookies.
+
+    Returns a JSON response with user email on success or appropriate
+    HTTP status codes on failure.
+
+    HTTP Status Codes:
+    - 200 OK: User profile information retrieved successfully.
+    - 403 Forbidden: Invalid session ID or unexpected error during retrieval.
+    """
+    # Check if the request method is GET
+    if request.method == "GET":
+        try:
+            # Get the session_id from the request cookies
+            session_id = request.cookies.get("session_id", None)
+
+            # If there is no session_id in the request cookies,
+            #   abort with 403 Forbidden
+            if session_id is None:
+                abort(403)
+
+            try:
+                # Attempt to get the user associated with the session ID
+                existing_user = AUTH.get_user_from_session_id(session_id)
+
+                # If a user is found, create a JSON response
+                #   with the user's email
+                if existing_user:
+                    message = {"email": existing_user.email}
+                    response = jsonify(message), 200
+                    return response
+                else:
+                    # If no user is found, abort with 403 Forbidden
+                    abort(403)
+
+            except Exception:
+                # Handle unexpected exceptions and abort with 403 Forbidden
+                abort(403)
+
+        except Exception:
+            # Handle unexpected exceptions and abort with 403 Forbidden
+            abort(403)
+    else:
+        # If the request method is not GET, abort with 403 Forbidden
+        abort(403)
+
+
 @app.route("/sessions", methods=["POST"])
-def login():
+def login() -> str:
     """
     Handles user login.
 
@@ -84,9 +136,13 @@ def login():
         if request.method == "POST":
             email = request.form.get("email")
             password = request.form.get("password")
+            if email and password:
+                email = email.strip()
+                password = password.strip()
             try:
                 # Check if the provided credentials are valid
                 if not AUTH.valid_login(email, password):
+                    print(f"{AUTH.valid_login(email, password) = }")
                     # If not, abort with 401 Unauthorized
                     abort(401)
 
@@ -128,6 +184,7 @@ def logout():
     if request.method == "DELETE":
         # Get the user's session ID from the cookies
         session_id = request.cookies.get("session_id", None)
+        # Abort with 403 if there is no session_id in request
         if session_id is None:
             abort(403)
 
