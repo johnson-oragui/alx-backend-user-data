@@ -5,6 +5,7 @@ Module to hash password and interact with auth DB
 import bcrypt
 import uuid
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Optional
 from db import DB
 from user import User
 
@@ -96,6 +97,29 @@ class Auth:
         except NoResultFound:
             return False
 
+    def create_session(self, email: str) -> Optional[str]:
+        """
+        Create a session for the user identified by the provided email.
+
+        param email: Email address of the user.
+        return: Session ID if created successfully, otherwise None.
+        """
+        try:
+            # Attempt to find the user by the provided email
+            existing_user = self._db.find_user_by(email=email)
+
+            # Generate a new session ID using a helper function
+            session_id = _generate_uuid()
+
+            # Update the user's session ID in the database
+            self._db.update_user(existing_user.id, session_id=session_id)
+
+            # Return the generated session ID
+            return session_id
+        except NoResultFound:
+            # If no user is found with the provided email, return None
+            return
+
 
 if __name__ == "__main__":
     email = 'bob@bob.com'
@@ -104,8 +128,5 @@ if __name__ == "__main__":
 
     auth.register_user(email, password)
 
-    print(auth.valid_login(email, password))
-
-    print(auth.valid_login(email, "WrongPwd"))
-
-    print(auth.valid_login("unknown@email", password))
+    print(auth.create_session(email))
+    print(auth.create_session("unknown@email.com"))
