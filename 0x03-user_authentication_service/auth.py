@@ -210,7 +210,7 @@ class Auth:
         try:
             # Find the user with the given reset token
             existing_user = self._db.find_user_by(reset_token=reset_token)
-        except ValueError:
+        except Exception:
             # If the reset token is invalid, raise a ValueError
             raise ValueError
 
