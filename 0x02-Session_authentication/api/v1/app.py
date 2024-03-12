@@ -80,20 +80,15 @@ def before_request() -> Optional[str]:
                       '/api/v1/auth_session/login/']
     # check for if auth is None,i.e no instance is assigned to auth
     if auth is None:
-        # do nothing
         return
-    # checks if request.path is not part of allowed_paths
-    if not auth.require_auth(request.path, excluded_paths):
-        # do nothing if it is not part of the list
+    if not auth.require_auth(request.path, allowed_paths):
         return
-    # checks if the auth method 'authorization_header' returned None
     if not auth.authorization_header(request) and not auth.session_cookie(request):  # noqa
         return abort(401)
-    # checks if the auth method 'current_user' returned None
-    if auth.current_user(request) is None:
-        # if it does, raise error with status code 403
-        return abort(403)  # forbidden access.
-    request.current_user = auth.current_user(request)
+    if not auth.current_user(request):
+        return abort(403)
+    if auth.current_user(request):
+        request.current_user = auth.current_user(request)
 
 
 if __name__ == "__main__":
