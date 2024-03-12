@@ -45,21 +45,16 @@ class Auth():
         """
         return
 
-    def session_cookie(self, request=None) -> Optional[str]:
+    def session_cookie(self, request=None):
         """
         Return the value of the cookie from request
         """
-        if request is None:
-            print("request is None")
+        if not request:
             return
         # retrieve the session_name from the env variable
-        session_name = getenv("SESSION_NAME", "_my_session_id")
-        #print(f"session_name: {session_name}")
-        #print(f"request.cookies.get: {request.cookies.get(session_name)}")
-        if request.cookies.get(session_name):
-            return request.cookies.get(session_name)
-        # return the value of cokkie
-        return f"_my_session_id"
+        session_name = getenv("SESSION_NAME")
+        cookie = request.cookies.get(session_name)
+        return cookie
 
 
 if __name__ == "__main__":
