@@ -87,12 +87,12 @@ def before_request() -> Optional[str]:
         # do nothing if it is not part of the list
         return
     # checks if the auth method 'authorization_header' returned None
-    if not (auth.authorization_header(request) and auth.session_cookie(request)):  # noqa
+    if not auth.authorization_header(request) and not auth.session_cookie(request):  # noqa
         return abort(401)
     # checks if the auth method 'current_user' returned None
     if auth.current_user(request) is None:
         # if it does, raise error with status code 403
-        abort(403)  # forbidden access.
+        return abort(403)  # forbidden access.
     request.current_user = auth.current_user(request)
 
 
