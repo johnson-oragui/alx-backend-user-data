@@ -81,7 +81,7 @@ def before_request() -> Optional[str]:
     # check for if auth is None,i.e no instance is assigned to auth
     if auth is None:
         return
-    if not auth.require_auth(request.path, allowed_paths):
+    if not auth.require_auth(request.path, excluded_paths):
         return
     if not auth.authorization_header(request) and not auth.session_cookie(request):  # noqa
         return abort(401)
