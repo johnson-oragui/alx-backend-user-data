@@ -86,6 +86,8 @@ def before_request() -> Optional[str]:
     if not auth.require_auth(request.path, excluded_paths):
         # do nothing if it is not part of the list
         return
+    if not auth.current_user(request):
+        return abort(403)
     # checks if the auth method 'authorization_header' returned None
     if not auth.authorization_header(request):
         return abort(401)
@@ -94,7 +96,6 @@ def before_request() -> Optional[str]:
     current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
     if current_user is None:
-        print("User not authenticated")
         # if it does, raise error with status code 403
         abort(403)  # forbidden access.
     request.current_user = current_user
