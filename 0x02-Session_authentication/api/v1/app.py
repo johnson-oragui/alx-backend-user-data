@@ -87,10 +87,10 @@ def before_request() -> Optional[str]:
         # do nothing if it is not part of the list
         return
     # checks if the auth method 'authorization_header' returned None
-    if (auth.authorization_header(request) is None or
-            auth.session_cookie(request) is None):
-        print("Session cookie missing")
-        abort(401)
+    if not auth.authorization_header(request):
+        return abort(401)
+    if not auth.session_cookie(request):
+        return abort(401)
     current_user = auth.current_user(request)
     # checks if the auth method 'current_user' returned None
     if current_user is None:
