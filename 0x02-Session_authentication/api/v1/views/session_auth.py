@@ -25,7 +25,7 @@ def login():
         return jsonify({"error": "password missing"}), 400
 
     try:
-        found_users = User.search({'email': email})
+        found_users = User.search(attributes={'email': email})
     except Exception:
         return jsonify({"error": "no user found for this email"}), 404
 
@@ -35,9 +35,9 @@ def login():
     for user in users:
         found_user_bool = user.is_valid_password(password)
         if user.is_valid_password(password):
-           found_user = user
+            found_user = user
     if not found_user_bool:
-       return jsonify({"error": "wrong password"}), 401
+        return jsonify({"error": "wrong password"}), 401
 
     session_id = auth.create_session(found_user.id)
     session_name = getenv('SESSION_NAME')
