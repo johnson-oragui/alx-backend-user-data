@@ -16,12 +16,12 @@ def login():
     from api.v1.app import auth
     email = request.form.get('email')
 
-    if not email or email.strip() == None:
+    if not email:
         return jsonify({"error": "email missing"}), 400
 
     password = request.form.get('password')
 
-    if not password or password.strip() == None:
+    if not password:
         return jsonify({"error": "password missing"}), 400
 
     try:
