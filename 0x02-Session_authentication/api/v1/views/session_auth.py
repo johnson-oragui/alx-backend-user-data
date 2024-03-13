@@ -27,7 +27,7 @@ def login():
     try:
         found_users = User.search(attributes={'email': email})
     except Exception:
-        return jsonify({"error": "no user found for this email"}), 404
+        return jsonify({"error": "no user found for this email"}), 401
 
     if not found_users:
         return jsonify({"error": "no user found for this email"}), 404
