@@ -62,6 +62,9 @@ class SessionAuth(Auth):
 
         if not user_id:
             return False
+        user = User.get(user_id)
+        if not user:
+            return False
 
         try:
             del self.user_id_by_session_id[session_id]
